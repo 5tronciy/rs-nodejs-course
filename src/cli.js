@@ -1,4 +1,5 @@
 import { createInterface } from 'node:readline/promises';
+import { navigate } from './navigate.js';
 
 function completer(line) {
   var completions = ['.exit'];
@@ -6,7 +7,7 @@ function completer(line) {
   return [hits.length ? hits : completions, line]
 }
 
-export const startCLI = async () => {
+export const startCLI = async (currentDir) => {
   const rl = createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -20,8 +21,12 @@ export const startCLI = async () => {
     }
 
     try {
-      // here will be operations
-      console.log('Invalid input');
+      if (line === 'up') {
+        currentDir = await navigate('up', currentDir);
+        console.log(`\nYou are currently in ${currentDir}`);
+      } else {
+        console.log('Invalid input');
+      }
     } catch (error) {
       console.log('Operation failed');
     }

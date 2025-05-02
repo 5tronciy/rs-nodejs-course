@@ -20,7 +20,7 @@ const main = async () => {
   const currentDir = homedir();
   console.log(`You are currently in ${currentDir}`);
 
-  await startCLI();
+  await startCLI(currentDir);
 
   console.log(`Thank you for using File Manager, ${username}, goodbye!`);
 };
