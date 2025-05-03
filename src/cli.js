@@ -14,6 +14,20 @@ export const startCLI = async (currentDir) => {
     completer,
   });
 
+  const commandHandlers = {
+    up: async () => {
+      currentDir = await navigate('up', currentDir);
+    },
+    cd: async ([path]) => {
+      if (!path) return console.log('Invalid input');
+
+      currentDir = await navigate('cd', currentDir, path);
+    },
+    ls: async () => {
+      await navigate('ls', currentDir);
+    },
+  }
+
   rl.on('line', async (line) => {
     const [command, ...args] = line.split(' ');
 
@@ -23,14 +37,9 @@ export const startCLI = async (currentDir) => {
     }
 
     try {
-      if (command === 'up') {
-        currentDir = await navigate('up', currentDir);
-        console.log(`\nYou are currently in ${currentDir}`);
-      } else if (command === 'ls') {
-        await navigate('ls', currentDir);
-        console.log(`\nYou are currently in ${currentDir}`);
-      } else if (command === 'cd') {
-        currentDir = await navigate('cd', currentDir, args[0]);
+      const handler = commandHandlers[command];
+      if (handler) {
+        await handler(args);
         console.log(`\nYou are currently in ${currentDir}`);
       } else {
         console.log('Invalid input');
