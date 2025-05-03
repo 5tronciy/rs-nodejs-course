@@ -24,6 +24,9 @@ export const startCLI = async (currentDir) => {
       if (line === 'up') {
         currentDir = await navigate('up', currentDir);
         console.log(`\nYou are currently in ${currentDir}`);
+      } else if (line === 'ls') {
+        await navigate('ls', currentDir);
+        console.log(`\nYou are currently in ${currentDir}`);
       } else {
         console.log('Invalid input');
       }
