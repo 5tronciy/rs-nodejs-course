@@ -15,17 +15,22 @@ export const startCLI = async (currentDir) => {
   });
 
   rl.on('line', async (line) => {
-    if (line === '.exit') {
+    const [command, ...args] = line.split(' ');
+
+    if (command === '.exit') {
       rl.close();
       return;
     }
 
     try {
-      if (line === 'up') {
+      if (command === 'up') {
         currentDir = await navigate('up', currentDir);
         console.log(`\nYou are currently in ${currentDir}`);
-      } else if (line === 'ls') {
+      } else if (command === 'ls') {
         await navigate('ls', currentDir);
+        console.log(`\nYou are currently in ${currentDir}`);
+      } else if (command === 'cd') {
+        currentDir = await navigate('cd', currentDir, args[0]);
         console.log(`\nYou are currently in ${currentDir}`);
       } else {
         console.log('Invalid input');

@@ -1,5 +1,5 @@
-import { dirname } from 'node:path';
-import { readdir } from 'node:fs/promises';
+import { dirname, resolve, isAbsolute } from 'node:path';
+import { readdir, stat } from 'node:fs/promises';
 
 const operations = {
   up: (currentDir) => {
@@ -10,6 +10,17 @@ const operations = {
     }
 
     return parentDir;
+  },
+  cd: async (currentDir, targetPath) => {
+    const newPath = isAbsolute(targetPath)
+      ? targetPath
+      : resolve(currentDir, targetPath);
+
+    const stats = await stat(newPath);
+    if (!stats.isDirectory()) {
+      throw new Error('Not a directory');
+    }
+    return newPath;
   },
   ls: async (currentDir) => {
     const entries = await readdir(currentDir, { withFileTypes: true });
@@ -30,14 +41,13 @@ const operations = {
   }
 };
 
-export const navigate = async (operation, currentDir) => {
+export const navigate = async (operation, currentDir, targetPath) => {
   const handler = operations[operation];
 
   if (!handler) {
     throw new Error('Invalid navigation operation');
   }
-
-  return handler(currentDir);
+  return operation === 'cd' ? handler(currentDir, targetPath) : handler(currentDir);
 };
 
 const sortDirectoryContents = (entries) => {
