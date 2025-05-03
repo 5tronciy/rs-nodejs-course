@@ -1,7 +1,7 @@
 import { dirname } from 'node:path';
 
-export const navigate = async (operation, currentDir) => {
-  if (operation === 'up') {
+const operations = {
+  up: (currentDir) => {
     const parentDir = dirname(currentDir);
 
     if (parentDir === currentDir) {
@@ -9,5 +9,15 @@ export const navigate = async (operation, currentDir) => {
     }
 
     return parentDir;
+  },
+};
+
+export const navigate = async (operation, currentDir) => {
+  const handler = operations[operation];
+
+  if (!handler) {
+    throw new Error('Invalid navigation operation');
   }
+
+  return handler(currentDir);
 };
