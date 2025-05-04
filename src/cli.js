@@ -6,7 +6,7 @@ import { navigate } from './navigate.js';
 import { systemInfo } from './systemInfo.js';
 
 function completer(line) {
-  var completions = ['.exit', 'up', 'cd', 'ls', 'cat', 'add', 'mkdir', 'rn', 'cp', 'mv', 'rm', 'os', 'hash', 'compress'];
+  var completions = ['.exit', 'up', 'cd', 'ls', 'cat', 'add', 'mkdir', 'rn', 'cp', 'mv', 'rm', 'os', 'hash', 'compress', 'decompress'];
   var hits = completions.filter((c) => { return c.indexOf(line) == 0 })
   return [hits.length ? hits : completions, line]
 }
@@ -80,6 +80,11 @@ export const startCLI = async (currentDir) => {
 
       await archive('compress', currentDir, pathToFile, pathToArchive);
     },
+    decompress: async ([pathToArchive, extractTo]) => {
+      if (!pathToArchive || !extractTo) return console.log('Invalid input');
+
+      await archive('decompress', currentDir, pathToArchive, extractTo);
+    }
   }
 
   rl.on('line', async (line) => {

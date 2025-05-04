@@ -1,4 +1,4 @@
-import { createBrotliCompress } from 'node:zlib';
+import { createBrotliCompress, createBrotliDecompress } from 'node:zlib';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { pipeline } from 'node:stream/promises';
 import { resolvePath } from './utils.js';
@@ -8,6 +8,10 @@ const operations = {
     const brotliCompress = createBrotliCompress();
     await pipeline(readStream, brotliCompress, writeStream);
   },
+  decompress: async (readStream, writeStream) => {
+    const brotliDecompress = createBrotliDecompress();
+    await pipeline(readStream, brotliDecompress, writeStream);
+  }
 };
 
 export const archive = async (operation, currentDir, sourcePath, destPath) => {
