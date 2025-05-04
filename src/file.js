@@ -2,7 +2,7 @@ import { createReadStream, createWriteStream } from 'node:fs';
 import { mkdir, rename, writeFile, unlink } from 'node:fs/promises';
 import { basename, dirname, resolve } from 'node:path';
 import { pipeline } from 'node:stream/promises';
-import { resolvePath } from './utils';
+import { resolvePath } from './utils.js';
 
 const operations = {
   cat: async (currentDir, path) => {

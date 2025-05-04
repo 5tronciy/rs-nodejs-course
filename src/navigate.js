@@ -1,6 +1,6 @@
 import { dirname } from 'node:path';
 import { readdir, stat } from 'node:fs/promises';
-import { resolvePath, sortDirectoryContents } from './utils';
+import { resolvePath, sortDirectoryContents } from './utils.js';
 
 const operations = {
   up: (currentDir) => {
