@@ -1,5 +1,6 @@
 import { createInterface } from 'node:readline/promises';
 import { navigate } from './navigate.js';
+import { file } from './file.js';
 
 function completer(line) {
   var completions = ['.exit'];
@@ -25,6 +26,11 @@ export const startCLI = async (currentDir) => {
     },
     ls: async () => {
       await navigate('ls', currentDir);
+    },
+    cat: async ([path]) => {
+      if (!path) return console.log('Invalid input');
+
+      await file('cat', currentDir, path);
     },
   }
 
