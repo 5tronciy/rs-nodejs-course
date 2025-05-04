@@ -25,17 +25,18 @@ const operations = {
     const entries = await readdir(currentDir, { withFileTypes: true });
     const sortedContents = sortDirectoryContents(entries);
 
-    console.log('\nName\tType');
-    console.log('-------------------');
+    const formattedEntries = [
+      ...sortedContents.directories.map((dir) => ({
+        Name: dir.name,
+        Type: 'directory'
+      })),
+      ...sortedContents.files.map((file) => ({
+        Name: file.name,
+        Type: 'file'
+      }))
+    ];
 
-    sortedContents.directories.forEach(dir => {
-      console.log(`${dir.name}\tdirectory`);
-    });
-
-    sortedContents.files.forEach(file => {
-      console.log(`${file.name}\tfile`);
-    });
-
+    console.table(formattedEntries);
     return currentDir;
   }
 };

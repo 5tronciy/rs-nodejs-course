@@ -7,7 +7,7 @@ export const resolvePath = (currentDir, targetPath) => {
 export const sortDirectoryContents = (entries) => {
   const directories = [];
   const files = [];
-  
+
   for (const entry of entries) {
     if (entry.isDirectory()) {
       directories.push(entry);
@@ -15,10 +15,10 @@ export const sortDirectoryContents = (entries) => {
       files.push(entry);
     }
   }
-  
+
   directories.sort((a, b) => a.name.localeCompare(b.name));
-  
+
   files.sort((a, b) => a.name.localeCompare(b.name));
-  
+
   return { directories, files };
 };
