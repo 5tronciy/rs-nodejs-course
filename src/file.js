@@ -49,6 +49,11 @@ const operations = {
     const writeStream = createWriteStream(destinationPath);
     await pipeline(readStream, writeStream);
     await unlink(sourcePath);
+  },
+  rm: async (currentDir, path) => {
+    const newPath = isAbsolute(path) ? path : resolve(currentDir, path);
+
+    await unlink(newPath);
   }
 };
 
