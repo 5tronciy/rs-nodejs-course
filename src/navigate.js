@@ -1,5 +1,6 @@
-import { dirname, resolve, isAbsolute } from 'node:path';
+import { dirname } from 'node:path';
 import { readdir, stat } from 'node:fs/promises';
+import { resolvePath, sortDirectoryContents } from './utils';
 
 const operations = {
   up: (currentDir) => {
@@ -12,9 +13,7 @@ const operations = {
     return parentDir;
   },
   cd: async (currentDir, targetPath) => {
-    const newPath = isAbsolute(targetPath)
-      ? targetPath
-      : resolve(currentDir, targetPath);
+    const newPath = resolvePath(currentDir, targetPath);
 
     const stats = await stat(newPath);
     if (!stats.isDirectory()) {
@@ -48,23 +47,4 @@ export const navigate = async (operation, currentDir, targetPath) => {
     throw new Error('Invalid navigation operation');
   }
   return operation === 'cd' ? handler(currentDir, targetPath) : handler(currentDir);
-};
-
-const sortDirectoryContents = (entries) => {
-  const directories = [];
-  const files = [];
-  
-  for (const entry of entries) {
-    if (entry.isDirectory()) {
-      directories.push(entry);
-    } else if (entry.isFile()) {
-      files.push(entry);
-    }
-  }
-  
-  directories.sort((a, b) => a.name.localeCompare(b.name));
-  
-  files.sort((a, b) => a.name.localeCompare(b.name));
-  
-  return { directories, files };
 };
