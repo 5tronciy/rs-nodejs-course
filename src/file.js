@@ -1,5 +1,5 @@
 import { createReadStream } from 'node:fs';
-import { writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve, isAbsolute } from 'node:path';
 
 const operations = {
@@ -17,6 +17,10 @@ const operations = {
     const path = resolve(currentDir, fileName);
 
     await writeFile(path, '', { flag: 'wx' });
+  },
+  mkdir: async (currentDir, dirName) => {
+    const path = resolve(currentDir, dirName);
+    await mkdir(path);
   },
 };
 
