@@ -1,9 +1,10 @@
 import { createInterface } from 'node:readline/promises';
 import { navigate } from './navigate.js';
 import { file } from './file.js';
+import { systemInfo } from './systemInfo.js';
 
 function completer(line) {
-  var completions = ['.exit', 'up', 'cd', 'ls', 'cat', 'add', 'mkdir', 'rn', 'cp', 'mv', 'rm'];
+  var completions = ['.exit', 'up', 'cd', 'ls', 'cat', 'add', 'mkdir', 'rn', 'cp', 'mv', 'rm', 'os'];
   var hits = completions.filter((c) => { return c.indexOf(line) == 0 })
   return [hits.length ? hits : completions, line]
 }
@@ -61,7 +62,12 @@ export const startCLI = async (currentDir) => {
       if (!path) return console.log('Invalid input');
 
       await file('rm', currentDir, path);
-    }
+    },
+    os: async ([flag]) => {
+      if (!flag || !flag.startsWith('--')) return console.log('Invalid input');
+
+      await systemInfo(flag);
+    },
   }
 
   rl.on('line', async (line) => {
