@@ -3,7 +3,7 @@ import { navigate } from './navigate.js';
 import { file } from './file.js';
 
 function completer(line) {
-  var completions = ['.exit'];
+  var completions = ['.exit', 'up', 'cd', 'ls', 'cat', 'add'];
   var hits = completions.filter((c) => { return c.indexOf(line) == 0 })
   return [hits.length ? hits : completions, line]
 }
@@ -32,6 +32,11 @@ export const startCLI = async (currentDir) => {
 
       await file('cat', currentDir, path);
     },
+    add: async ([fileName]) => {
+      if (!fileName) return console.log('Invalid input');
+
+      await file('add', currentDir, fileName);
+    }
   }
 
   rl.on('line', async (line) => {

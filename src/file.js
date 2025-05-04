@@ -1,4 +1,5 @@
 import { createReadStream } from 'node:fs';
+import { writeFile } from 'node:fs/promises';
 import { resolve, isAbsolute } from 'node:path';
 
 const operations = {
@@ -11,6 +12,11 @@ const operations = {
     stream.on('end', () => {
       process.stdout.write('\n');
     });
+  },
+  add: async (currentDir, fileName) => {
+    const path = resolve(currentDir, fileName);
+
+    await writeFile(path, '', { flag: 'wx' });
   },
 };
 
