@@ -1,6 +1,7 @@
-import { createReadStream } from 'node:fs';
+import { createReadStream, createWriteStream } from 'node:fs';
 import { mkdir, rename, writeFile } from 'node:fs/promises';
-import { dirname, resolve, isAbsolute } from 'node:path';
+import { basename, dirname, resolve, isAbsolute } from 'node:path';
+import { pipeline } from 'node:stream/promises';
 
 const operations = {
   cat: async (currentDir, path) => {
@@ -28,6 +29,16 @@ const operations = {
 
     await rename(oldPath, newPath);
   },
+  cp: async (currentDir, pathToFile, pathToDirectory) => {
+    const sourcePath = isAbsolute(pathToFile) ? pathToFile : resolve(currentDir, pathToFile);
+    const targetDir = isAbsolute(pathToDirectory) ? pathToDirectory : resolve(currentDir, pathToDirectory);
+    const fileName = basename(sourcePath);
+    const destinationPath = resolve(targetDir, fileName);
+
+    const readStream = createReadStream(sourcePath);
+    const writeStream = createWriteStream(destinationPath);
+    await pipeline(readStream, writeStream);
+  },
 };
 
 export const file = async (operation, currentDir, path, newFileName) => {
@@ -37,5 +48,5 @@ export const file = async (operation, currentDir, path, newFileName) => {
     throw new Error('Invalid file operation');
   }
 
-  return operation === 'rn' ? handler(currentDir, path, newFileName) : handler(currentDir, path);
+  return ['rn', 'cp'].includes(operation) ? handler(currentDir, path, newFileName) : handler(currentDir, path);
 };
