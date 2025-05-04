@@ -1,6 +1,6 @@
 import { createReadStream } from 'node:fs';
-import { mkdir, writeFile } from 'node:fs/promises';
-import { resolve, isAbsolute } from 'node:path';
+import { mkdir, rename, writeFile } from 'node:fs/promises';
+import { dirname, resolve, isAbsolute } from 'node:path';
 
 const operations = {
   cat: async (currentDir, path) => {
@@ -22,14 +22,20 @@ const operations = {
     const path = resolve(currentDir, dirName);
     await mkdir(path);
   },
+  rn: async (currentDir, path, newFileName) => {
+    const oldPath = isAbsolute(path) ? path : resolve(currentDir, path);
+    const newPath = resolve(dirname(oldPath), newFileName);
+
+    await rename(oldPath, newPath);
+  },
 };
 
-export const file = async (operation, currentDir, path) => {
+export const file = async (operation, currentDir, path, newFileName) => {
   const handler = operations[operation];
 
   if (!handler) {
     throw new Error('Invalid file operation');
   }
 
-  return handler(currentDir, path);
+  return operation === 'rn' ? handler(currentDir, path, newFileName) : handler(currentDir, path);
 };
