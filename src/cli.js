@@ -1,10 +1,11 @@
 import { createInterface } from 'node:readline/promises';
-import { navigate } from './navigate.js';
 import { file } from './file.js';
+import { hash } from './hash.js';
+import { navigate } from './navigate.js';
 import { systemInfo } from './systemInfo.js';
 
 function completer(line) {
-  var completions = ['.exit', 'up', 'cd', 'ls', 'cat', 'add', 'mkdir', 'rn', 'cp', 'mv', 'rm', 'os'];
+  var completions = ['.exit', 'up', 'cd', 'ls', 'cat', 'add', 'mkdir', 'rn', 'cp', 'mv', 'rm', 'os', 'hash'];
   var hits = completions.filter((c) => { return c.indexOf(line) == 0 })
   return [hits.length ? hits : completions, line]
 }
@@ -67,6 +68,11 @@ export const startCLI = async (currentDir) => {
       if (!flag || !flag.startsWith('--')) return console.log('Invalid input');
 
       await systemInfo(flag);
+    },
+    hash: async ([path]) => {
+      if (!path) return console.log('Invalid input');
+
+      await hash(currentDir, path);
     },
   }
 
