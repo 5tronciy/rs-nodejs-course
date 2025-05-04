@@ -1,11 +1,12 @@
 import { createInterface } from 'node:readline/promises';
+import { archive } from './archive.js';
 import { file } from './file.js';
 import { hash } from './hash.js';
 import { navigate } from './navigate.js';
 import { systemInfo } from './systemInfo.js';
 
 function completer(line) {
-  var completions = ['.exit', 'up', 'cd', 'ls', 'cat', 'add', 'mkdir', 'rn', 'cp', 'mv', 'rm', 'os', 'hash'];
+  var completions = ['.exit', 'up', 'cd', 'ls', 'cat', 'add', 'mkdir', 'rn', 'cp', 'mv', 'rm', 'os', 'hash', 'compress'];
   var hits = completions.filter((c) => { return c.indexOf(line) == 0 })
   return [hits.length ? hits : completions, line]
 }
@@ -73,6 +74,11 @@ export const startCLI = async (currentDir) => {
       if (!path) return console.log('Invalid input');
 
       await hash(currentDir, path);
+    },
+    compress: async ([pathToFile, pathToArchive]) => {
+      if (!pathToFile || !pathToArchive) return console.log('Invalid input');
+
+      await archive('compress', currentDir, pathToFile, pathToArchive);
     },
   }
 
